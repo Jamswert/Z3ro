@@ -7,4 +7,5 @@ load_dotenv()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
-GUILD_ID = discord.Object(id=1373285906315743293)
+GUILD_ID = discord.Object(id=1192230487280848896)
+DEVS = [901913992434434128]

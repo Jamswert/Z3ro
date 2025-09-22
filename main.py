@@ -5,7 +5,7 @@ from core.config import BOT_TOKEN, GUILD_ID
 
 import os
 
-TOKEN = BOT_TOKEN
+TOKEN = str(BOT_TOKEN)
 
 import asyncio
 
