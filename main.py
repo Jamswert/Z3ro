@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 
 from core.config import BOT_TOKEN, GUILD_ID
-
 import os
 
 TOKEN = str(BOT_TOKEN)
@@ -60,6 +59,5 @@ async def on_guild_remove(guild):
 async def main():
     async with bot:
         await bot.start(TOKEN)
-
-
+        
 asyncio.run(main())
