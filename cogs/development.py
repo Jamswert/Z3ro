@@ -3,7 +3,7 @@ from discord.ext import commands
 from discord import app_commands
 from datetime import datetime
 
-from core.config import DEVS
+from core.config import DEVS, VERSION
 
 class Development(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -15,7 +15,7 @@ class Development(commands.Cog):
     @development.command(name="ping", description="Returns the bot's latency.")
     async def ping(self, interaction : discord.Interaction):
         if interaction.user.id not in DEVS:
-            await interaction.response.send_message("You are not a developer!", ephemeral=True)
+            await interaction.response.send_message("🚫 You are not a developer, therefore you can't use this command.", ephemeral=True)
             return
         
         latency_ms = round(self.bot.latency * 1000)
@@ -48,6 +48,14 @@ class Development(commands.Cog):
         embed.set_footer(text="The uptime of the bot.")
 
         await interaction.response.send_message(embed=embed, ephemeral=True)
+
+    @development.command(name="version", description="Returns the version of the bot.")
+    async def version(self, interaction: discord.Interaction):
+        if interaction.user.id not in DEVS:
+            await interaction.response.send_message("🚫 You are not a developer, therefore you can't use this command.", ephemeral=True)
+            return
+
+        await interaction.response.send_message(f"The current version of Z3ro is: Z3ro-{VERSION}", ephemeral=True)
 
 async def setup(bot):
     await bot.add_cog(Development(bot))
