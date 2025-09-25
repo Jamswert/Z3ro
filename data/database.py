@@ -9,7 +9,6 @@ def get_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
-# --- Add a new guild if it doesn't exist ---
 def add_guild(guild_id: int):
     """A function to add a guild to the database if it isn't already found.
     Parameters:
@@ -25,7 +24,6 @@ def add_guild(guild_id: int):
     conn.commit()
     conn.close()
 
-# --- Toggle a specific setting column ---
 def toggle_guild_setting(guild_id: int, setting: str) -> bool:
     """A function that toggles the setting for a guild in the database.
     Parameters:
@@ -52,7 +50,6 @@ def toggle_guild_setting(guild_id: int, setting: str) -> bool:
 
     return bool(new_value)
 
-# --- Fetch entire guild row ---
 def get_guild(guild_id: int):
     """A function that fetches the entire guild's row.
     Parameters:

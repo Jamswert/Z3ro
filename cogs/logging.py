@@ -1,6 +1,9 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
+from datetime import datetime
+
+from data.database import get_guild
 
 class Logging(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -28,5 +31,67 @@ class Logging(commands.Cog):
 
         await channel.send(embed=embed)
         
+    @commands.Cog.listener()
+    async def on_member_join(self, member: discord.Member):
+        if member.avatar:
+            avatar_url = member.avatar.url
+        else:
+            avatar_url = member.default_avatar.url
+        
+        welcome_embed = discord.Embed(
+            title="New Join",
+            description="A member has joined the server.",
+            color=discord.Color.green()
+            )
+        welcome_embed.add_field(
+            name=f"Member:",
+            value=f"{member.mention}",
+            inline=False
+        )
+        welcome_embed.add_field(
+            name=f"Time of Join",
+            value=datetime.now().strftime("%d/%m/%Y - %H:%M:%S"),
+            inline=False
+        )
+        welcome_embed.set_footer(
+            text="User joined the server.",
+            icon_url=avatar_url)
+        guild_data = get_guild(member.guild.id)
+        logging = guild_data["logging_enabled"]
+        if logging:
+            channel = discord.utils.get(member.guild.text_channels, name="member-logs")
+            await channel.send(embed=welcome_embed)
+
+    @commands.Cog.listener()
+    async def on_member_remove(self, member: discord.Member):
+        if member.avatar:
+            avatar_url = member.avatar.url
+        else:
+            avatar_url = member.default_avatar.url
+        
+        welcome_embed = discord.Embed(
+            title="New Leave",
+            description="A member has left the server.",
+            color=discord.Color.red()
+            )
+        welcome_embed.add_field(
+            name=f"Member:",
+            value=f"{member.mention}, Name: {member.display_name}",
+            inline=False
+        )
+        welcome_embed.add_field(
+            name=f"Time of Leave",
+            value=datetime.now().strftime("%d/%m/%Y - %H:%M:%S"),
+            inline=False
+        )
+        welcome_embed.set_footer(
+            text="User left the server.",
+            icon_url=avatar_url)
+        guild_data = get_guild(member.guild.id)
+        logging = guild_data["logging_enabled"]
+        if logging:
+            channel = discord.utils.get(member.guild.text_channels, name="member-logs")
+            await channel.send(embed=welcome_embed)
+
 async def setup(bot: commands.Bot):
     await bot.add_cog(Logging(bot))
