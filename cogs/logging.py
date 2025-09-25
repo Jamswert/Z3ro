@@ -93,5 +93,53 @@ class Logging(commands.Cog):
             channel = discord.utils.get(member.guild.text_channels, name="member-logs")
             await channel.send(embed=welcome_embed)
 
+    @commands.Cog.listener()
+    async def on_message(self, message: discord.Message):
+        if message.author == self.bot.user:
+            return
+        
+        message_author = message.author
+        message_content = message.content
+        message_sent = message.created_at
+
+        formatted_time = message_sent.strftime("%d/%m/%Y - %H:%M:%S")
+
+        embed = discord.Embed(
+            title="New message",
+            description="A new message has been sent.",
+            color=discord.Color.green()
+        )
+        embed.add_field(
+            name="Message Author:",
+            value=f"{message_author.mention}, ID : {message_author.id}",
+            inline=True
+        )
+        embed.add_field(
+            name="Message Time:",
+            value=f"The message was sent at: {formatted_time}",
+            inline=True
+        )
+        embed.add_field(
+            name="Message Channel",
+            value=f"The message was sent in {message.channel.mention}",
+            inline=True
+        )
+        embed.add_field(
+            name="Message Contents:",
+            value=f"{message_content}",
+            inline=False
+        )
+        embed.add_field(
+            name="Jump to message.",
+            value=f"[Click here]({message.jump_url})",
+            inline=False
+        )
+        guild_data = get_guild(message_author.guild.id)
+        logging = guild_data["logging_enabled"]
+        if logging:
+            channel = discord.utils.get(message_author.guild.text_channels, name="message-logs")
+            await channel.send(embed=embed)
+        
+
 async def setup(bot: commands.Bot):
     await bot.add_cog(Logging(bot))
