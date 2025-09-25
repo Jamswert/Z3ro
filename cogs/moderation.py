@@ -51,6 +51,19 @@ class Moderation(commands.Cog):
                 self.bot.dispatch("moderation", interaction, member, "Ban", reason, interaction.user)
         else:
             await interaction.response.send_message("🚫 You do not have Permission to Moderate Members.", ephemeral=True)
+    
+    @moderation.command(name="unban", description="Unbams the specified user.")
+    async def unban(self, interaction: discord.Interaction, user_id: str, reason: Optional[str] = None):
+        if interaction.user.guild_permissions.ban_members:
+            user= await self.bot.fetch_user(user_id)
+            await interaction.guild.unban(user)
+            await interaction.response.send_message(f"Success! You have unbanned the user: {user.name}", ephemeral=True)
+            guildData = get_guild(interaction.guild.id)
+            Logging = guildData["logging_enabled"]
+            if Logging:
+                self.bot.dispatch("moderation", interaction, user, "Unban", reason, interaction.user)
+        else:
+            await interaction.response.send_message("🚫 You do not have Permission to Moderate Members.", ephemeral=True)
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Moderation(bot))
